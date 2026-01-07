@@ -1,0 +1,43 @@
+local serverStorage = game:GetService("ServerStorage")
+local phys = game:GetService("PhysicsService")
+local mob = {}
+
+function mob.Move(mob, map)
+	local zombie = mob:WaitForChild("Humanoid")
+	local waypoints = map.Waypoints
+
+	for waypoint=1, #waypoints:GetChildren() do
+		zombie:MoveTo(waypoints[waypoint].Position)
+		zombie.MoveToFinished:Wait(5)
+	end
+	mob:Destroy()
+end
+
+function mob.Spawn(name, quantity, map)
+	local mobExists = serverStorage.Enemies:FindFirstChild(name)
+	
+	if mobExists then
+		for i=1, quantity do
+			task.wait(0.5)
+			local newClone = mobExists:Clone()
+			newClone.Parent = workspace.MapEnemies
+			newClone.HumanoidRootPart.CFrame = map.Start.CFrame
+			newClone.HumanoidRootPart:SetNetworkOwner(nil)
+
+			for i, object in ipairs(newClone:GetDescendants()) do
+				if object:IsA("BasePart") then
+					object.CollisionGroup = "Enemy"
+				end
+			end
+			
+			newClone.Humanoid.Died:Connect(function()
+				task.wait(0.25)
+				newClone:Destroy()
+			end)
+			coroutine.wrap(mob.Move)(newClone, map)
+		end
+	else
+		warn("Requested Mob does not exist")
+	end
+end
+return mob
