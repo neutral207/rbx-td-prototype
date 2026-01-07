@@ -1,0 +1,22 @@
+local mob = require(script.Mob)
+local map = workspace.Grassland
+local waves = require(script.Waves)
+local tower = require(script.Tower)
+local totalWaves = 5
+
+
+
+for i, waveEnemies in ipairs(waves) do
+	print("WAVE:", i)
+	
+	for _, enemy in ipairs(waveEnemies) do
+		mob.Spawn(enemy.Name, enemy.Count, map)
+	end
+	
+	repeat
+		task.wait(1)
+	until #workspace.MapEnemies:GetChildren() == 0
+	
+	print("WAVE CLEARED")
+	task.wait(5)
+end
