@@ -1,16 +1,29 @@
+local player = game:GetService("Players")
 local uis = game:GetService("UserInputService")
 local cam = workspace.CurrentCamera
 local rs = game:GetService("ReplicatedStorage")
 local run = game:GetService("RunService")
+
+local cash = player.LocalPlayer.leaderstats:WaitForChild("Cash")
 local events =  rs:WaitForChild("Events")
+local functions =  rs:WaitForChild("Functions")
+local requestTower = functions:WaitForChild("RequestTower")
 local spawnTowerEvent = events:WaitForChild("SpawnTower")
 local towerToSpawn = nil
 local gui = script.Parent
 local canPlace = false
 local towers = rs:WaitForChild("Towers")
 local rotation = 0
+local placedTowers = 0
+local maxTowers = 15
 
-task.wait(1)
+local function updateCash()
+	gui.Cash.Text = "$ " .. cash.Value
+end
+updateCash()
+cash.Changed:Connect(updateCash)
+
+
 local function mouseRaycast(blacklist)
 	
 	local mousePos = uis:GetMouseLocation()
@@ -63,10 +76,26 @@ local function colorPHTower(color)
 	end
 end
 
-gui.Spawn.Activated:Connect(function()
-	addPHTower("Scout")
-end)
+gui.Towers.Title.Text = "Towers (" .. placedTowers .. "/" .. maxTowers .. ")"
 
+for i, tower in pairs(towers:GetChildren()) do
+	local button = gui.Towers.Template:Clone()
+	button.Name = tower.Name
+	local config = tower.Configuration
+	button.Image = config.Image.Texture
+	button.Visible = true
+	button.LayoutOrder = config.Price.Value
+	button.Price.Text = "$" .. config.Price.Value
+	button.Parent = gui.Towers
+	
+	button.Activated:Connect(function()
+		local allowedToSpawn = requestTower:InvokeServer(tower.Name)
+		if allowedToSpawn then
+			addPHTower(tower.Name)
+		end
+		
+	end)
+end
 
 
 
@@ -76,6 +105,7 @@ uis.InputBegan:Connect(function(input, processed)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 then
 			if canPlace then
 				spawnTowerEvent:FireServer(towerToSpawn.Name, towerToSpawn.PrimaryPart.CFrame)
+				placedTowers += 1
 				removePHTower()
 			end
 		elseif input.KeyCode == Enum.KeyCode.R then
