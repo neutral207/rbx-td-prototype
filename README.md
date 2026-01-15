@@ -1,32 +1,36 @@
-# Roblox-Tower-Defense-prototype
+# Roblox Tower Defense Gameplay Prototype (Code Sample)
 
 ## Overview
-Gameplay systems prototype built in Roblox Studio using Luau.
-This project focuses on core gameplay architecture and code quality rather than visual polish or content completeness.
+This repository contains gameplay system code written in Luau for a Roblox tower defense prototype.
+The focus of this project is clean architecture, modular gameplay systems, and maintainable code structure
+rather than a fully published or asset-complete experience.
 
-## Features
-- Data-driven wave system
-- Server-authoritative enemy movement
-- Tower placement via raycasting
+This repository is intended as a **code sample**, not a standalone runnable game.
+
+## Systems Implemented
+- Data-driven wave and enemy spawning system
+- Server-authoritative enemy movement and lifecycle handling
 - Modular tower targeting and damage logic
+- Client-side tower placement via mouse raycasting with server validation and placement limit
+- Base health, lose conditions, and basic gameplay UI
+- Basic Economy system with updated placement conditions based on prices
+- Clear separation of server and client responsibilities
 
 ## Project Structure
-This structure mirrors Roblox Studio services to keep client and server responsibilities clearly separated:
+Scripts are organized as they would appear in Roblox Studio:
+- Server-side logic → ServerScriptService
+- Client-side logic → StarterGui / StarterPlayerScripts
+- Shared modules → ReplicatedStorage
 
-ServerScripts/ → ServerScriptService  
-ClientScripts/ → StarterGui
-StarterScripts/ → StarterPlayerScripts
+Only gameplay scripts are included in this repository.
 
 ## Design Goals
-- Maintainability
-- Clear server/client separation
-- Low technical debt
+- Maintainable and extensible gameplay systems
+- Clear separation of concerns
+- Data-driven configuration over hard-coded behavior
+- Server authority for core gameplay logic
 
-## Known Limitations
-- Minimal UI and animations
-- No Rojo sync (code samples only)
-
-## Engineering Notes
-- Wave configurations are separated from execution logic to enable easy iteration without modifying core systems.
-- Enemy movement and damage are handled server-side to prevent client authority issues.
-- Tower placement previews are client-side, with final placement validated by the server.
+## Notes
+- Models, maps, animations, and UI assets are intentionally excluded.
+- The prototype is currently private and under active development.
+- This repository is meant to demonstrate gameplay engineering practices and system design decisions.
